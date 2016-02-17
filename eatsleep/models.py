@@ -25,7 +25,8 @@ class FoodLog(models.Model):
 
     @classmethod
     def get_day_entries(cls, day=date_.today()):
-        return cls.objects.filter(datetime__range=day_timerange(day))
+        return cls.objects.filter(datetime__range=day_timerange(day))\
+                            .order_by('datetime')
 
 
 class SleepLog(models.Model):

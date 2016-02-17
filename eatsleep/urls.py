@@ -20,5 +20,6 @@ from eatsleep.views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^overview/', Overview.as_view())
+    url(r'^overview/', Overview.as_view()),
+    url(r'^log/', Log.as_view())
 ]
