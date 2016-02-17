@@ -1,0 +1,29 @@
+{
+  "name": "eatsleep",
+  "description": "Calorie and sleep tracking for nerds.",
+  "main": "index.js",
+  "authors": [
+    "Kix Panganiban <github.com/kixpanganiban>"
+  ],
+  "license": "CC-BY-SA-4.0",
+  "keywords": [
+    "tracking",
+    "calorie",
+    "django"
+  ],
+  "moduleType": [],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.6",
+    "pickadate": "~3.5.6",
+    "highcharts": "~4.2.3"
+  }
+}

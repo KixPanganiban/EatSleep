@@ -1,0 +1,16 @@
+{
+  "name": "eatsleep",
+  "version": "0.0.1",
+  "description": "Calorie and sleep tracking for nerds.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "tracking",
+    "calorie",
+    "django"
+  ],
+  "author": "Kix Panganiban <github.com/kixpanganiban>",
+  "license": "CC-BY-SA-4.0"
+}

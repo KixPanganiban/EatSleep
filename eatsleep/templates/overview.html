@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'pickadate/lib/themes/default.css' %}"/>
+    <link rel="stylesheet" href="{% static 'pickadate/lib/themes/default.date.css' %}"/>
+{% endblock %}
+{% block body %}
+    <h1>Overview <small>{{ date }}</small></h1>
+    <div>
+        <div class="row">
+            <div class="col-md-8">
+            Your caloric goal completion for this day:
+            <b>{{ progress.total }}/{{ progress.target.calories }} ({{ progress.percent}}%)</b>
+                <div class="progress">
+                <div class="progress-bar {% if progress.status == 'Good' %}progress-bar-success{% else%}progress-bar-danger{% endif %}" role="progressbar" style="width: {{ progress.percent }}%">
+                <span class="sr-only">40% Complete (success)</span>
+                </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <input class="btn btn-primary btn-lg pull-right" type="button" value="Navigate to date" id="nav-date"/>
+            </div>
+        </div>
+    </div>
+    <div>
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#foodlogs" data-toggle="tab" role="tab">Food Logs</a></li>
+                <li><a href="#sleeplogs" data-toggle="tab" role="tab">Sleep Logs</a></li>
+                <li><a href="#messages" data-toggle="tab" role="tab">Messages</a></li>
+                <li><a href="#settings" data-toggle="tab" role="tab">Settings</a></li>
+            </ul>
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="foodlogs">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <table class="table">
+                            <thead>
+                                <th>Time</th>
+                                <th>Food</th>
+                                <th>Calories</th>
+                            </thead>
+                            <tbody>
+                                {% if foodlogs %}
+                                    {% for foodlog in foodlogs %}
+                                    <tr>
+                                        <td>{{ foodlog.datetime }}</td>
+                                        <td>{{ foodlog.name }}</td>
+                                        <td>{{ foodlog.calories }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                <tr>
+                                    <td colspan="3">
+                                    No food logs on this date.
+                                    </td>
+                                </tr>
+                                {% endif %}                
+                            </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-4">
+                            <div id="chart"></div>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="sleeplogs">
+                    !
+                </div>
+            </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script src="{% static 'pickadate/lib/picker.js' %}" type="text/javascript"></script>
+    <script src="{% static 'pickadate/lib/picker.date.js' %}" type="text/javascript"></script>
+    <script type="text/javascript">
+        $("#nav-date").pickadate({
+            formatSubmit: 'mm-dd-yyyy',
+            onSet: function(ctx) {
+                window.location = '/overview/?date=' + this.get('highlight', 'mm-dd-yyyy')
+            }
+        });
+    </script>
+    <script src="{% static 'highcharts/highcharts.js' %}" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function () {
+    $('#chart').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: 0,
+            plotShadow: true
+        },
+        title: {
+            text: 'Food<br/>Calories<br/>Distribution',
+            align: 'center',
+            verticalAlign: 'middle',
+            y: 40
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                dataLabels: {
+                    enabled: true,
+                    distance: -50,
+                    style: {
+                        fontWeight: 'bold',
+                        color: 'white',
+                        textShadow: '0px 1px 2px black'
+                    }
+                },
+                startAngle: -140,
+                endAngle: 140,
+                center: ['50%', '50%']
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: 'Calories by Food',
+            innerSize: '50%',
+            data: {{ chart_foodlogs | safe }},
+                {
+                    name: 'Others',
+                    y: 0.2,
+                    dataLabels: {
+                        enabled: false
+                    }
+                }
+            ]
+        }]
+    });
+});
+    </script>
+{% endblock %}
