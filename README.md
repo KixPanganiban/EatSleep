@@ -5,16 +5,20 @@ A *work-in-progress* food, workout, and sleep logging mini Django project for da
 
 Log your caloric intake and burns, and see them in clean tables and charts (powered by HighCharts).
 
+- **Feb 18, 2016**:
+    Seven-day logs and chart for sleep are now integrated as well. Food intake can now also be logged.
+
 - **Feb 17, 2016 (first commit)**:
     Currently, you can navigate by day but only view logs and charts for food. All input must be done in Django admin for now (powered by Django Suit).
+
 
 --
 
 TODO:
 -----
 
-- Add inputting capability for for food
-- Add overview parts for sleep and workout
+- Add input functionality for sleep
+
 
 Future features:
 ----------------
@@ -22,6 +26,7 @@ Future features:
 - Weekly and monthly summaries
 - Analysis of foods (which foods contribute to the most calories)
 - Analysis of sleeping and eating habits
+- Rewrite front-end to ReactJS
 
 License
 =======
