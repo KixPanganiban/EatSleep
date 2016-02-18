@@ -1,3 +1,5 @@
+import json
+
 from datetime import date, datetime
 
 from django.conf import settings
@@ -5,7 +7,7 @@ from django.views.generic import View
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from eatsleep.models import FoodLog, TargetCalories
+from eatsleep.models import FoodLog, TargetCalories, SleepLog
 from eatsleep.utils import format_foodlog_chart_json
 
 
@@ -63,7 +65,11 @@ class Overview(EatSleepView):
                 'chart_foodlogs': format_foodlog_chart_json(foodlogs),
                 'date': datetime.strftime(date_target, '%B %d, %Y'),
                 'error': request.session['error'] if request.session['error']
-                else None
+                else None,
+                'sleeplogs': SleepLog.get_sevenday_entries(),
+                'chart_sleeplogs': json.dumps(
+                    SleepLog.get_sevenday_entries_durations(
+                        date_target))
             })
         return self.esv_render(request)
 

@@ -1,8 +1,8 @@
-from datetime import date as date_, timedelta
+from datetime import date as date_, timedelta, datetime
 
 from django.db import models
 
-from eatsleep.utils import day_timerange
+from eatsleep.utils import multi_day_timerange, day_timerange
 
 
 class FoodLog(models.Model):
@@ -21,12 +21,12 @@ class FoodLog(models.Model):
         if query.count() == 0:
             return 0.0
         return float(
-            reduce(lambda m, n: m+n, map(lambda q: q.calories, query)))
+            reduce(lambda m, n: m + n, map(lambda q: q.calories, query)))
 
     @classmethod
     def get_day_entries(cls, day=date_.today()):
         return cls.objects.filter(datetime__range=day_timerange(day))\
-                            .order_by('datetime')
+            .order_by('datetime')
 
 
 class SleepLog(models.Model):
@@ -35,6 +35,35 @@ class SleepLog(models.Model):
 
     def __unicode__(self):
         return "[%s] %.2f hours" % (self.datetime, self.duration)
+
+    @classmethod
+    def get_sevenday_entries(cls, day=date_.today()):
+        return cls.objects.filter(
+            datetime__range=multi_day_timerange(
+                day-timedelta(days=7),
+                day))
+
+    @classmethod
+    def get_sevenday_entries_durations(cls, day=date_.today()):
+        entries = []
+        curr_day = day - timedelta(days=6)
+        while (curr_day <= day):
+            query_set = cls.objects.filter(
+                datetime__range=day_timerange(curr_day))
+            if query_set.count() > 0:
+                items = query_set
+            else:
+                items = [0]
+            entries.append((datetime.strftime(curr_day, '%m-%d-%Y'),
+                           reduce(
+                                  lambda m, n: m + n,
+                                  map(
+                                      lambda l: float(l.duration)
+                                      if isinstance(l, SleepLog)
+                                      else 0.0,
+                                      items))))
+            curr_day += timedelta(days=1)
+        return entries
 
 
 class WorkoutLog(models.Model):

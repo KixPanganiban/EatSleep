@@ -3,9 +3,13 @@ import json
 from datetime import datetime, date, time
 
 
+def multi_day_timerange(day_a=date.today(), day_b=date.today()):
+    return (datetime.combine(day_a, time.min),
+            datetime.combine(day_b, time.max))
+
+
 def day_timerange(day=date.today()):
-    return (datetime.combine(day, time.min),
-            datetime.combine(day, time.max))
+    return multi_day_timerange(day, day)
 
 
 def format_foodlog_chart_json(items):

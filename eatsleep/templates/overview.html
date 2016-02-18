@@ -98,12 +98,34 @@
                             </form>
                         </div>
                         <div class="col-md-4">
-                            <div id="chart"></div>
+                            <div id="food-chart"></div>
                         </div>
                     </div>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="sleeplogs">
-                    !
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table">
+                                <thead>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Duration</th>
+                                </thead>
+                                <tbody>
+                                    {% for sleeplog in sleeplogs %}
+                                    <tr>
+                                        <td>{{ sleeplog.datetime.date }}</td>
+                                        <td>{{ sleeplog.datetime.time }}</td>
+                                        <td>{{ sleeplog.duration }} hours</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <div id="sleep-chart"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
     </div>
@@ -130,8 +152,8 @@
     </script>
     <script src="{% static 'highcharts/highcharts.js' %}" type="text/javascript"></script>
     <script type="text/javascript">
-    $(function () {
-    $('#chart').highcharts({
+    $(document).ready(function () {
+    $('#food-chart').highcharts({
         chart: {
             plotBackgroundColor: null,
             plotBorderWidth: 0,
@@ -175,6 +197,55 @@
                     }
                 }
             ]
+        }]
+    });
+    $('#sleep-chart').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Sleep Durations'
+        },
+        subtitle: {
+            text: 'Last 7 Days from {{ date }}'
+        },
+        xAxis: {
+            type: 'category',
+            labels: {
+                rotation: -45,
+                style: {
+                    fontSize: '13px',
+                    fontFamily: 'Verdana, sans-serif'
+                }
+            }
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Duration'
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        tooltip: {
+            pointFormat: 'Duration for this day: <b>{point.y:.1f} hours</b>'
+        },
+        series: [{
+            name: 'Sleep Duration',
+            data: {{ chart_sleeplogs | safe }},
+            dataLabels: {
+                enabled: true,
+                rotation: -90,
+                color: '#FFFFFF',
+                align: 'right',
+                format: '{point.y:.1f}', // one decimal
+                y: 10, // 10 pixels down from the top
+                style: {
+                    fontSize: '13px',
+                    fontFamily: 'Verdana, sans-serif'
+                }
+            }
         }]
     });
 });
